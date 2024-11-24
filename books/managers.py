@@ -4,12 +4,23 @@ from typing import Optional
 
 from books.models import Book
 from constants import DATABASE_FILE_PATH
+from core.exceptions import BookNotFoundError
 from core.managers import BaseAbstractManager
 
 __all__ = ["BookManager"]
 
 
 class BookManager(BaseAbstractManager):
+    """
+    Менеджер книг.
+
+    Доступные операции:
+        - create() - Создание новой книги.
+        - all() - Список всех книг.
+        - get() - Получение книг по поисковому запросу.
+        - delete() - Удаление книги по id.
+    """
+
     def __init__(
         self,
         file_path: str = DATABASE_FILE_PATH,
@@ -31,6 +42,7 @@ class BookManager(BaseAbstractManager):
     ) -> None:
         """
         Добавляет новый объект в базу данных.
+        :raises FileNotFoundError: Если файл базы данных не найден.
         """
         new_book = Book(
             title=title,
@@ -46,6 +58,7 @@ class BookManager(BaseAbstractManager):
     def all(self) -> list[Book]:
         """
         Возвращает список объектов из базы данных.
+        :raises FileNotFoundError: Если файл базы данных не найден.
         """
         return self.__read()
 
@@ -57,6 +70,7 @@ class BookManager(BaseAbstractManager):
     ) -> list[Book]:
         """
         Получает книги по поисковому запросу.
+        :raises FileNotFoundError: Если файл базы данных не найден.
         """
         return [
             book
@@ -68,9 +82,10 @@ class BookManager(BaseAbstractManager):
 
     def delete(self, pk: str) -> None:
         """
-        Получает книгу по указанному id.
+        Удаляет книгу по указанному id.
         :param pk: Идентификатор книги.
-        :raises ValueError: Если книга не найлена.
+        :raise BookNotFoundError: Если книга не найлена.
+        :raise FileNotFoundError: Если файл базы данных не найден.
         """
         data = self.__read()
         for index, book in enumerate(data):
@@ -79,7 +94,7 @@ class BookManager(BaseAbstractManager):
                 self.__write(data)
                 print(f"Книга '{book.title}' удалена")
                 return None
-        raise ValueError(f"Книга по id '{pk}' не найдена")
+        raise BookNotFoundError(f"Книга по id '{pk}' не найдена")
 
     def _file_exists(self) -> None:
         if os.path.exists(self.__file):

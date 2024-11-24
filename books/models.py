@@ -36,6 +36,10 @@ class Book:
         print(f"Статус книги изменён на '{BOOK_STATUS.get(value)}'")
 
     def to_json(self) -> dict[str, Any]:
+        """
+        Преобразует объект Book в JSON и возвращает.
+        :return: Данные о книге в формате dict.
+        """
         return {
             "id": self.id,
             "title": self.title,
@@ -46,6 +50,11 @@ class Book:
 
     @staticmethod
     def from_json(data: dict[str, Any]) -> "Book":
+        """
+        Преобразует JSON объект в объект класса  и возвращает.
+        :param data: Данные о книге в формате dict.
+        :return: Объект класса Book.
+        """
         return Book(**data)
 
     def _validate_status(self, value: str) -> None:
