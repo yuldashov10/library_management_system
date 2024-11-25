@@ -1,4 +1,4 @@
-BOOK_STATUS: dict = {
+BOOK_STATUS: dict[str, str] = {
     "в наличии": "в наличии",
     "выдана": "выдана",
 }
