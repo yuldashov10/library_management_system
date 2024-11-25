@@ -7,17 +7,17 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = "^3.10"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
 isort = "^5.13.2"
 flake8 = "^7.1.1"
+flake8-pyproject = "^1.2.3"
 pylint = "^3.3.1"
 mypy = "^1.13.0"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^8.3.2"
 faker = "^28.0.0"
 
 [build-system]
