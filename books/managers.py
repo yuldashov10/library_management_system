@@ -118,7 +118,10 @@ class BookManager(BaseAbstractManager):
             mode="r",
             encoding=self.encoding,
         ) as read_file:
-            return [Book.from_json(item) for item in json.load(read_file)]
+            data: str = read_file.read().strip()
+            if not data:
+                return []
+            return [Book.from_json(item) for item in json.loads(data)]
 
     def __write(self, data: list[Book]) -> None:
         with open(

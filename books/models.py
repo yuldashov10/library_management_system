@@ -1,5 +1,5 @@
 import uuid
-from typing import Any, Optional
+from typing import Any
 
 from constants import BOOK_STATUS
 
@@ -15,9 +15,9 @@ class Book:
         author: str,
         year: int,
         status: str = BOOK_STATUS.get("в наличии"),
-        id: str = Optional[str],
+        **kwargs,
     ) -> None:
-        self.__id = id or str(uuid.uuid4())
+        self.__id = kwargs.get("id") or str(uuid.uuid4())
         self.title = title
         self.author = author
         self.year = year

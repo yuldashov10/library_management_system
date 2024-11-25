@@ -1,7 +1,6 @@
 from typing import Callable, Optional
 
-from books import Book
-from books.managers import BookManager
+from books import Book, BookManager, RandomDataGenerator
 from core.exceptions import BookNotFoundError, InvalidBookStatusError
 from core.utils import (
     BookTableView,
@@ -76,6 +75,29 @@ class LibraryCLI:
         except (BookNotFoundError, InvalidBookStatusError) as err_msg:
             print(f"[Ошибка] {err_msg}")
 
+    def prompt_for_random_books(self) -> None:
+        """
+        Спрашивает пользователя, заполнить базу случайными книгами.
+        """
+        user_ans: str = input(
+            "Вы хотите заполнить базу случайными книгами? (да/нет): "
+        ).strip()
+        if user_ans.lower() == "да":
+            books_count: str = input(
+                "Сколько книг вы хотите добавить?: "
+            ).strip()
+            try:
+                random_data = RandomDataGenerator(
+                    self.manager,
+                    int(books_count) if books_count.isdigit() else None,
+                )
+            except ValueError:
+                print("[Некорректный ввод] База не была заполнена")
+            else:
+                random_data.generate_books()
+        else:
+            print("[Инфо] База не будет заполнена случайными данными")
+
     def _join(self, queries: tuple[str, ...]) -> str:
         return ",".join(query for query in queries if query)
 
@@ -110,6 +132,7 @@ class LibraryCLI:
             "5": self.update_book_status,
         }
 
+        self.prompt_for_random_books()
         while True:
             self.menu()
 

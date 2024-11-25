@@ -2,6 +2,8 @@ from typing import Optional
 
 from faker import Faker
 
+from .managers import BookManager
+
 __all__ = ["RandomDataGenerator"]
 
 
@@ -14,7 +16,7 @@ class RandomDataGenerator:
 
     def __init__(
         self,
-        manager: "BookManager",
+        manager: BookManager,
         books_count: Optional[int] = None,
     ) -> None:
         """
