@@ -90,6 +90,22 @@ git clone https://github.com/yuldashov10/library_management_system.git && cd lib
 
 ---
 
+## Как запустить тесты
+
+- Запустить команду из корневой папки проекта:
+
+    - Linux/MacOS
+
+       ```shell
+        python3 -m unittest -v
+       ```
+
+    - Windows (Windows 10+)
+
+      ```commandline
+      python -m unittest -v
+      ```
+
 ## Автор
 
 [Юлдашов Шохрух](https://t.me/shyuldashov/)
