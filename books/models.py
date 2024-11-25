@@ -1,9 +1,11 @@
 import uuid
-from typing import Any
+from typing import Any, Optional
 
 from constants import BOOK_STATUS
 
 __all__ = ["Book"]
+
+from core.exceptions import InvalidBookStatusError
 
 
 class Book:
@@ -13,8 +15,9 @@ class Book:
         author: str,
         year: int,
         status: str = BOOK_STATUS.get("в наличии"),
+        id: str = Optional[str],
     ) -> None:
-        self.__id = str(uuid.uuid4())
+        self.__id = id or str(uuid.uuid4())
         self.title = title
         self.author = author
         self.year = year
@@ -54,13 +57,15 @@ class Book:
         Преобразует JSON объект в объект класса  и возвращает.
         :param data: Данные о книге в формате dict.
         :return: Объект класса Book.
+        :raise InvalidBookStatusError: Если указано недопустимое
+        значение для статуса книги.
         """
         return Book(**data)
 
     def _validate_status(self, value: str) -> None:
         if value not in BOOK_STATUS:
-            raise KeyError(
-                "Такой статус для книги не существует, возможные значения "
+            raise InvalidBookStatusError(
+                "[Недопустимое значение] Возможные значения "
                 f"для статуса {','.join(BOOK_STATUS.keys())}"
             )
 

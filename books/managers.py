@@ -38,17 +38,14 @@ class BookManager(BaseAbstractManager):
         title: str,
         author: str,
         year: int,
-        status: str,
     ) -> None:
         """
         Добавляет новый объект в базу данных.
-        :raises FileNotFoundError: Если файл базы данных не найден.
         """
         new_book = Book(
             title=title,
             author=author,
             year=year,
-            status=status,
         )
         data = self.__read()
         data.append(new_book)
@@ -58,7 +55,6 @@ class BookManager(BaseAbstractManager):
     def all(self) -> list[Book]:
         """
         Возвращает список объектов из базы данных.
-        :raises FileNotFoundError: Если файл базы данных не найден.
         """
         return self.__read()
 
@@ -70,35 +66,48 @@ class BookManager(BaseAbstractManager):
     ) -> list[Book]:
         """
         Получает книги по поисковому запросу.
-        :raises FileNotFoundError: Если файл базы данных не найден.
         """
         return [
             book
             for book in self.__read()
             if (title and title.lower() in book.title.lower())
             or (author and author.lower() in book.author.lower())
-            or (year and str(year) == str(book.year))
+            or (year and year == book.year)
         ]
+
+    def update(self, pk: str, new_status: str) -> None:
+        """
+        Обновляет статус книги по id.
+        :param pk: Идентификатор книги.
+        :param new_status: Новый статус для книги.
+        :raise:
+        """
+        data = self.__read()
+        for index, book in enumerate(data):
+            if book.id == pk:
+                if data[index].status == new_status:
+                    print(f"Книга уже в статусе '{new_status}'")
+                else:
+                    data[index].status = new_status
+                    self.__write(data)
 
     def delete(self, pk: str) -> None:
         """
         Удаляет книгу по указанному id.
         :param pk: Идентификатор книги.
         :raise BookNotFoundError: Если книга не найлена.
-        :raise FileNotFoundError: Если файл базы данных не найден.
         """
         data = self.__read()
         for index, book in enumerate(data):
             if book.id == pk:
                 del data[index]
                 self.__write(data)
-                print(f"Книга '{book.title}' удалена")
-                return None
+                print(f"Книга '{book.title}' была удалена")
+                return
         raise BookNotFoundError(f"Книга по id '{pk}' не найдена")
 
-    def _file_exists(self) -> None:
-        if os.path.exists(self.__file):
-            raise FileNotFoundError(f"Файл '{self.__file}' не найден")
+    def _file_exists(self) -> bool:
+        return os.path.exists(self.__file)
 
     def __read(self) -> list[Book]:
         if not self._file_exists():
